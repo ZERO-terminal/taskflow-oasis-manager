@@ -1,73 +1,118 @@
-# Welcome to your Lovable project
 
-## Project info
+# TaskFlow - Task Management Application
 
-**URL**: https://lovable.dev/projects/d947daf6-3ac7-4e3a-b9f1-592f8f36495b
+TaskFlow is a full-stack task management application built with React and Supabase. It allows users to create, manage, and track their tasks in a clean, intuitive interface.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **User Authentication**: Secure email/password signup and login
+- **Task Management**: Create, read, update, and delete tasks
+- **Task Details**: Each task has a title, description, due date, and completion status
+- **Task Priorities**: Set low, medium, or high priority for tasks
+- **Filtering & Sorting**: Filter tasks by completion status and priority, sort by various criteria
+- **Real-time Updates**: See task changes in real-time using Supabase subscriptions
+- **Data Privacy**: Tasks are scoped to the authenticated user with Row Level Security
+- **Responsive Design**: Works on mobile and desktop devices
 
-**Use Lovable**
+## Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d947daf6-3ac7-4e3a-b9f1-592f8f36495b) and start prompting.
+- **Frontend**: React with TypeScript, Vite, TailwindCSS, shadcn/ui components
+- **Backend**: Supabase (Authentication, Database, Real-time subscriptions)
+- **Routing**: React Router v6
+- **Form Handling**: Native React forms
+- **UI Components**: shadcn/ui component library
+- **Date Handling**: date-fns
 
-Changes made via Lovable will be committed automatically to this repo.
+## Setup Instructions
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v14 or later)
+- npm or yarn
+- A Supabase account and project
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Supabase Setup
 
-Follow these steps:
+1. Create a new Supabase project at https://supabase.com
+2. Set up the database schema:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```sql
+-- Create tasks table
+CREATE TABLE public.tasks (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  is_complete BOOLEAN DEFAULT FALSE NOT NULL,
+  due_date TIMESTAMP WITH TIME ZONE,
+  priority TEXT CHECK (priority IN ('low', 'medium', 'high')),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+-- Set up Row Level Security
+ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
 
-# Step 3: Install the necessary dependencies.
-npm i
+-- Create policies for task access
+CREATE POLICY "Users can only view their own tasks"
+  ON public.tasks
+  FOR SELECT
+  USING (auth.uid() = user_id);
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+CREATE POLICY "Users can only insert their own tasks"
+  ON public.tasks
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can only update their own tasks"
+  ON public.tasks
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can only delete their own tasks"
+  ON public.tasks
+  FOR DELETE
+  USING (auth.uid() = user_id);
 ```
 
-**Edit a file directly in GitHub**
+3. Get your Supabase URL and anon key from the project settings
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Environment Setup
 
-**Use GitHub Codespaces**
+1. Clone this repository
+2. Create a `.env` file in the project root with:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## What technologies are used for this project?
+3. Install dependencies:
 
-This project is built with:
+```bash
+npm install
+# or
+yarn
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+4. Start the development server:
 
-## How can I deploy this project?
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-Simply open [Lovable](https://lovable.dev/projects/d947daf6-3ac7-4e3a-b9f1-592f8f36495b) and click on Share -> Publish.
+5. Open your browser and navigate to http://localhost:8080
 
-## Can I connect a custom domain to my Lovable project?
+## Deployment
 
-Yes it is!
+This application can be deployed to any static hosting service (Vercel, Netlify, etc.) that supports environment variables.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Future Enhancements
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Task categorization/labels
+- Dark mode toggle
+- Task search
+- Recurring tasks
+- Notifications/reminders
+- Mobile app version
