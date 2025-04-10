@@ -35,9 +35,7 @@ const TaskEditDialog = ({
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
   const [dueDate, setDueDate] = useState(task.due_date || "");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">(
-    (task.priority as "low" | "medium" | "high") || "low"
-  );
+  const [priority, setPriority] = useState<string>(task.priority || "medium");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +56,7 @@ const TaskEditDialog = ({
         title,
         description: description || null,
         due_date: dueDate || null,
-        priority: priority,
+        priority,
       });
       
       onTaskUpdated();
@@ -129,7 +127,7 @@ const TaskEditDialog = ({
               <Label>Priority</Label>
               <RadioGroup
                 value={priority}
-                onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}
+                onValueChange={setPriority}
                 disabled={isLoading}
                 className="flex space-x-2"
               >

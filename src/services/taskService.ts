@@ -80,7 +80,9 @@ export async function deleteTask(id: string) {
 
 // Toggle task completion status
 export async function toggleTaskCompletion(id: string, isComplete: boolean) {
-  return updateTask(id, { is_complete: isComplete });
+  return updateTask(id, { 
+    status: isComplete ? "completed" : "todo" 
+  });
 }
 
 // Subscribe to real-time changes on tasks

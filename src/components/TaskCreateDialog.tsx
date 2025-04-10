@@ -30,14 +30,14 @@ const TaskCreateDialog = ({ onTaskCreated }: TaskCreateDialogProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<string>("low");
+  const [priority, setPriority] = useState<string>("medium");
   const [isLoading, setIsLoading] = useState(false);
 
   const resetForm = () => {
     setTitle("");
     setDescription("");
     setDueDate("");
-    setPriority("low");
+    setPriority("medium");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,9 +57,9 @@ const TaskCreateDialog = ({ onTaskCreated }: TaskCreateDialogProps) => {
       await createTask({
         title,
         description: description || null,
-        is_complete: false,
+        status: "todo", // Use status instead of is_complete
         due_date: dueDate || null,
-        priority: priority as "low" | "medium" | "high" | null,
+        priority,
         user_id: user?.id,
       });
       
@@ -72,6 +72,7 @@ const TaskCreateDialog = ({ onTaskCreated }: TaskCreateDialogProps) => {
         description: "Your new task has been created successfully.",
       });
     } catch (error) {
+      console.error("Task creation error:", error);
       toast({
         variant: "destructive",
         title: "Failed to create task",

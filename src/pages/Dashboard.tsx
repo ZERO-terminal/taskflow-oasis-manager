@@ -62,7 +62,7 @@ const Dashboard = () => {
   // Apply filters
   const filteredTasks = tasks.filter(task => {
     // Filter by completion status
-    if (!filterOptions.showCompleted && task.is_complete) {
+    if (!filterOptions.showCompleted && task.status === "completed") {
       return false;
     }
     
@@ -99,7 +99,7 @@ const Dashboard = () => {
     }
   });
 
-  const incompleteTasksCount = tasks.filter(task => !task.is_complete).length;
+  const incompleteTasksCount = tasks.filter(task => task.status !== "completed").length;
 
   return (
     <div className="min-h-screen bg-background">

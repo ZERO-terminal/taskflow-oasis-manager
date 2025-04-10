@@ -21,12 +21,14 @@ const TaskCard = ({ task, onTaskUpdated }: TaskCardProps) => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   
+  const isComplete = task.status === "completed";
+  
   const handleCheckboxChange = async () => {
     try {
-      await toggleTaskCompletion(task.id, !task.is_complete);
+      await toggleTaskCompletion(task.id, !isComplete);
       onTaskUpdated();
       toast({
-        title: task.is_complete ? "Task marked as incomplete" : "Task completed",
+        title: isComplete ? "Task marked as incomplete" : "Task completed",
         description: task.title,
       });
     } catch (error) {
@@ -69,7 +71,7 @@ const TaskCard = ({ task, onTaskUpdated }: TaskCardProps) => {
   };
 
   const isOverdue = task.due_date 
-    ? new Date(task.due_date) < new Date() && !task.is_complete 
+    ? new Date(task.due_date) < new Date() && !isComplete 
     : false;
 
   return (
@@ -77,14 +79,14 @@ const TaskCard = ({ task, onTaskUpdated }: TaskCardProps) => {
       <Card 
         className={cn(
           "transition-all duration-200", 
-          task.is_complete ? "opacity-70" : "",
+          isComplete ? "opacity-70" : "",
           isOverdue ? "border-destructive/50" : ""
         )}
       >
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
             <Checkbox 
-              checked={task.is_complete} 
+              checked={isComplete} 
               onCheckedChange={handleCheckboxChange} 
               className="mt-1"
             />
@@ -93,7 +95,7 @@ const TaskCard = ({ task, onTaskUpdated }: TaskCardProps) => {
                 <h3 
                   className={cn(
                     "font-medium text-base line-clamp-2",
-                    task.is_complete ? "line-through text-muted-foreground" : ""
+                    isComplete ? "line-through text-muted-foreground" : ""
                   )}
                 >
                   {task.title}
