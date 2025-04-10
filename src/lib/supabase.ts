@@ -1,13 +1,12 @@
 
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
-// Get environment variables or use placeholder values
-// These placeholder values will prevent the app from crashing,
-// but the Supabase client won't work until proper values are provided
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://placeholder-project.supabase.co";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "placeholder-anon-key";
+// Use the values from the Supabase integration
+const supabaseUrl = "https://pzeuronovneipnpicaoc.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6ZXVyb25vdm5laXBucGljYW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzMjAzNzIsImV4cCI6MjA1OTg5NjM3Mn0.aBhyd-IEYvPpSiXJuDDKHG8Bz9TmgZkAT4Uj5NCOOp0";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 export type Json =
   | string
