@@ -1,8 +1,11 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Get environment variables or use placeholder values
+// These placeholder values will prevent the app from crashing,
+// but the Supabase client won't work until proper values are provided
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://placeholder-project.supabase.co";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "placeholder-anon-key";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
